@@ -23,23 +23,21 @@ public class PostController {
     // react -> react+SSR = next
 
     @PostMapping("/posts")
-    public Map<String, String> post(@RequestBody @Valid PostCreate params, BindingResult result) {
+    public Map<String, String> post(@RequestBody @Valid PostCreate params) {
         // 데이터 검증 이유
         // 1. client 개발자가 깜빡할 수 있다 실수로 값을 안보낼 수 있다
         // 2. client bug로 인해 값이 누락될 수 있다
         // 3. 외부의 나쁜 사람이 값을 임의로 조작해서 보낼 수 있다
         // 4. DB에 값을 저장할 때 의도치않은 오류가 발생할 수 있다
         // 5. 서버 개발자의 편안함을 위해서
-        if(result.hasErrors()) {
-            List<FieldError> fieldErrors = result.getFieldErrors();
-            FieldError firstFieldError = fieldErrors.get(0);
-            String fieldName = firstFieldError.getField();      // title
-            String errorMessage = firstFieldError.getDefaultMessage();      // error message
 
-            Map<String, String> error = new HashMap<>();
-            error.put(fieldName, errorMessage);
-            return error;
-        }
+        // 1. 매번 메서드마다 값을 검증해야한다
+        //      > 개발자가 까먹을 수 있다
+        //      > 검증 부분에서 버그가 발생할 여지가 높다
+        //2. 응답값에 HashMap -> 응답 클래스를 만들어 주는게 좋다
+        //3. 여러 개의 에러처리 힘듬
+        //4. 세 번 이상의 반복적인 작업은 피한다 -> 자동화 고려
+
 
 //        String title = params.getTitle();
 //        if(title == null || title.equals("")) {
@@ -50,7 +48,6 @@ public class PostController {
 //            // 5. 뭔가 개발자스럽지 않다 -> 간지X
 //            throw new Exception("타이틀값이 없어요");
 //        }
-
 
         return Map.of();
     }
