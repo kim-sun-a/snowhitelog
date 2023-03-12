@@ -1,6 +1,8 @@
 package com.snowhitelog.controller;
 
 import com.snowhitelog.request.PostCreate;
+import com.snowhitelog.service.PostService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -15,6 +17,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class PostController {
     // SSR -> jsp, thymeleaf, mustache, freemarker
             //- html rendering
@@ -22,8 +25,10 @@ public class PostController {
     // vue -> vue+SSR = nuxt.js  -? javascript <-> API JSON
     // react -> react+SSR = next
 
+    private final PostService postService;
+
     @PostMapping("/posts")
-    public Map<String, String> post(@RequestBody @Valid PostCreate params) {
+    public Map<String, String> post(@RequestBody @Valid PostCreate reqeust) {
         // 데이터 검증 이유
         // 1. client 개발자가 깜빡할 수 있다 실수로 값을 안보낼 수 있다
         // 2. client bug로 인해 값이 누락될 수 있다
@@ -48,7 +53,7 @@ public class PostController {
 //            // 5. 뭔가 개발자스럽지 않다 -> 간지X
 //            throw new Exception("타이틀값이 없어요");
 //        }
-
+        postService.write(reqeust);
         return Map.of();
     }
 
