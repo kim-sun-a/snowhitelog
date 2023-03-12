@@ -3,6 +3,7 @@ package com.snowhitelog.service;
 import com.snowhitelog.domain.Post;
 import com.snowhitelog.repository.PostRepository;
 import com.snowhitelog.request.PostCreate;
+import com.snowhitelog.response.PostResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,16 +47,16 @@ class PostServiceTest {
     @DisplayName("글 1개 조회")
     void test2() {
         // given
-        Post reqeustPost = Post.builder().title("foo").content("bar").build();
+        Post reqeustPost = Post.builder().title("1234567890123456").content("bar").build();
         postRepository.save(reqeustPost);
 
         //when
-        Post post = postService.get(reqeustPost.getId());
+        PostResponse post = postService.get(reqeustPost.getId());
 
         //then
         assertNotNull(post);
         assertEquals(1L, postRepository.count());
-        assertEquals("foo", post.getTitle());
+        assertEquals("1234567890123456", post.getTitle());
         assertEquals("bar", post.getContent());
 
     }

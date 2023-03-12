@@ -2,6 +2,7 @@ package com.snowhitelog.controller;
 
 import com.snowhitelog.domain.Post;
 import com.snowhitelog.request.PostCreate;
+import com.snowhitelog.response.PostResponse;
 import com.snowhitelog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,9 +69,12 @@ public class PostController {
      *  /posts/{postId} -> 글 한개만 조회
      */
     @GetMapping("/posts/{postId}")
-    public Post get(@PathVariable(name = "postId") Long id) {
-        Post post = postService.get(id);
-        return post;
-    }
+    public PostResponse get(@PathVariable(name = "postId") Long id) {
+        // Request(DTO) Class
+        // Response(DTO) Class
 
+        PostResponse response = postService.get(id);
+        //응답 클래스를 분리
+        return response;
+    }
 }
