@@ -1,5 +1,6 @@
 package com.snowhitelog.controller;
 
+import com.snowhitelog.domain.Post;
 import com.snowhitelog.request.PostCreate;
 import com.snowhitelog.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/posts")
-    public Map<String, String> post(@RequestBody @Valid PostCreate reqeust) {
+    public void post(@RequestBody @Valid PostCreate reqeust) {
         // 데이터 검증 이유
         // 1. client 개발자가 깜빡할 수 있다 실수로 값을 안보낼 수 있다
         // 2. client bug로 인해 값이 누락될 수 있다
@@ -53,8 +54,15 @@ public class PostController {
 //            // 5. 뭔가 개발자스럽지 않다 -> 간지X
 //            throw new Exception("타이틀값이 없어요");
 //        }
+
+        //case 1. 저장한 데이터 entity -> response로 응답하기
+        //case 2. 저장한 데이터 primary_id -> response로 응답하기
+        //      client에서는 수신한 id를 글 조회 api를 통해서 데이터 수신받음
+        //case 3. 응닶 필요 없음 -> 클라이언트에서 모든 글 데이터 context를 잘 관리함
+        //bad case: 서버에서 반드시 이렇게 할겁니다 fix
+        //          -> 서버에서는 유연하게 대응하는 것이 좋음
+        //          -> 한번에 일괄적으로 잘 처리되는 케이스가 없다 -> 잘 관리하는 형태가 중요
         postService.write(reqeust);
-        return Map.of();
     }
 
 
