@@ -6,6 +6,9 @@ import com.snowhitelog.request.PostCreate;
 import com.snowhitelog.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,8 +37,12 @@ public class PostService {
         return PostResponse.builder().id(post.getId()).title(post.getTitle()).content(post.getContent()).build();
     }
 
-    public List<PostResponse> getList() {
-        return postRepository.findAll().stream()
+    // 글이 너무 많은 경우 -> 비용이 많이 든다
+    // 글이 1억개 잇는 경우 db에서 모두 조회하면 db가 뻗을 수 잇다
+    // db -> 애플리케이션 서버로 전달하는 시간, 트래픽등이 많이 발생할 수 있다
+    public List<PostResponse> getList(Pageable page) {
+        // web -> page 1 -> 0
+        return postRepository.findAll(page).stream()
                 .map(PostResponse::new
         ).collect(Collectors.toList());
     }
