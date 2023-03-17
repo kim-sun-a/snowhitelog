@@ -3,8 +3,10 @@ package com.snowhitelog.service;
 import com.snowhitelog.domain.Post;
 import com.snowhitelog.repository.PostRepository;
 import com.snowhitelog.request.PostCreate;
+import com.snowhitelog.request.PostEdit;
 import com.snowhitelog.request.PostSearch;
 import com.snowhitelog.response.PostResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,4 +90,50 @@ class PostServiceTest {
         assertEquals("foo 30", postList.get(0).getTitle());
     }
 
+    @Test
+    @DisplayName("게시글 제목 수정")
+    void test4() {
+        // given
+        Post post = Post.builder()
+                .title("서나쓰")
+                .content("반포자이")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("서나체고")
+                .build();
+
+        //when
+        postService.edit(post.getId(), postEdit);
+
+        //then
+        Post changePost = postRepository.findById(post.getId()).orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id = " + post.getId()));
+
+        assertEquals("서나체고", changePost.getTitle());
+        assertEquals("반포자이", changePost.getContent());
+    }
+
+    @Test
+    @DisplayName("게시글 내용 수정")
+    void test5() {
+        // given
+        Post post = Post.builder()
+                .title("서나쓰")
+                .content("반포자이")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("서나쓰")
+                .content("초가집")
+                .build();
+
+        //when
+        postService.edit(post.getId(), postEdit);
+
+        //then
+        Post changePost = postRepository.findById(post.getId()).orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id = " + post.getId()));
+        assertEquals("초가집", changePost.getContent());
+    }
 }

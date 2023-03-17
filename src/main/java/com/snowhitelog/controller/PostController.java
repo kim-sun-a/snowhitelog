@@ -2,6 +2,7 @@ package com.snowhitelog.controller;
 
 import com.snowhitelog.domain.Post;
 import com.snowhitelog.request.PostCreate;
+import com.snowhitelog.request.PostEdit;
 import com.snowhitelog.request.PostSearch;
 import com.snowhitelog.response.PostResponse;
 import com.snowhitelog.service.PostService;
@@ -84,4 +85,10 @@ public class PostController {
     public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
         return postService.getList(postSearch);
     }
+
+    @PatchMapping("/posts/{postId}")
+    public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit postEdit) {
+        postService.edit(postId, postEdit);
+    }
+
 }

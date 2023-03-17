@@ -1,8 +1,10 @@
 package com.snowhitelog.service;
 
 import com.snowhitelog.domain.Post;
+import com.snowhitelog.domain.PostEditor;
 import com.snowhitelog.repository.PostRepository;
 import com.snowhitelog.request.PostCreate;
+import com.snowhitelog.request.PostEdit;
 import com.snowhitelog.request.PostSearch;
 import com.snowhitelog.response.PostResponse;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,5 +49,16 @@ public class PostService {
         return postRepository.getList(postSearch).stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void edit(Long id, PostEdit postEdit) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+        PostEditor.PostEditorBuilder builder = post.toEditor();
+
+        PostEditor postEditor = builder.title(postEdit.getTitle()).content(postEdit.getContent()).build();
+
+        post.edit(postEditor);
     }
 }
