@@ -3,23 +3,20 @@ package com.snowhitelog.service;
 import com.snowhitelog.domain.Post;
 import com.snowhitelog.repository.PostRepository;
 import com.snowhitelog.request.PostCreate;
+import com.snowhitelog.request.PostSearch;
 import com.snowhitelog.response.PostResponse;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.data.domain.Sort.Direction.DESC;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 class PostServiceTest {
@@ -75,21 +72,20 @@ class PostServiceTest {
         // given
         List<Post> requestPosts = IntStream.range(1,31)
                         .mapToObj(i ->  Post.builder()
-                                    .title("서나맨 제목 " + i)
-                                    .content("반포자이  " + i)
+                                    .title("foo " + i)
+                                    .content("bar  " + i)
                                     .build())
                         .collect(Collectors.toList());
         postRepository.saveAll(requestPosts);
 
-        Pageable pageable = PageRequest.of(0, 5, Sort.by(DESC, "id"));
+        PostSearch postSearch = PostSearch.builder().page(1).build();
         // sql -> select, limit, offset
         //when
-        List<PostResponse> postList = postService.getList(pageable);
+        List<PostResponse> postList = postService.getList(postSearch);
 
         //then
-        assertEquals(5L, postList.size());
-        assertEquals("서나맨 제목 30", postList.get(0).getTitle());
-        assertEquals("서나맨 제목 26", postList.get(4).getTitle());
+        assertEquals(10L, postList.size());
+        assertEquals("foo 30", postList.get(0).getTitle());
     }
 
 }

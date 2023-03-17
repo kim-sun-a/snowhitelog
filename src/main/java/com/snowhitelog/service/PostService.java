@@ -3,6 +3,7 @@ package com.snowhitelog.service;
 import com.snowhitelog.domain.Post;
 import com.snowhitelog.repository.PostRepository;
 import com.snowhitelog.request.PostCreate;
+import com.snowhitelog.request.PostSearch;
 import com.snowhitelog.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,10 +41,10 @@ public class PostService {
     // 글이 너무 많은 경우 -> 비용이 많이 든다
     // 글이 1억개 잇는 경우 db에서 모두 조회하면 db가 뻗을 수 잇다
     // db -> 애플리케이션 서버로 전달하는 시간, 트래픽등이 많이 발생할 수 있다
-    public List<PostResponse> getList(Pageable page) {
+    public List<PostResponse> getList(PostSearch postSearch) {
         // web -> page 1 -> 0
-        return postRepository.findAll(page).stream()
-                .map(PostResponse::new
-        ).collect(Collectors.toList());
+        return postRepository.getList(postSearch).stream()
+                .map(PostResponse::new)
+                .collect(Collectors.toList());
     }
 }

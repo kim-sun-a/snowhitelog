@@ -2,6 +2,7 @@ package com.snowhitelog.controller;
 
 import com.snowhitelog.domain.Post;
 import com.snowhitelog.request.PostCreate;
+import com.snowhitelog.request.PostSearch;
 import com.snowhitelog.response.PostResponse;
 import com.snowhitelog.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -80,7 +81,7 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getList(Pageable page) {
-        return postService.getList(page);
+    public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
+        return postService.getList(postSearch);
     }
 }
