@@ -102,6 +102,7 @@ class PostServiceTest {
 
         PostEdit postEdit = PostEdit.builder()
                 .title("서나체고")
+                .content(null)
                 .build();
 
         //when
