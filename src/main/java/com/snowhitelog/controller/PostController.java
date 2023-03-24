@@ -1,6 +1,7 @@
 package com.snowhitelog.controller;
 
 import com.snowhitelog.domain.Post;
+import com.snowhitelog.exception.InvalidRequest;
 import com.snowhitelog.request.PostCreate;
 import com.snowhitelog.request.PostEdit;
 import com.snowhitelog.request.PostSearch;
@@ -32,7 +33,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/posts")
-    public void post(@RequestBody @Valid PostCreate reqeust) {
+    public void post(@RequestBody @Valid PostCreate request) {
         // 데이터 검증 이유
         // 1. client 개발자가 깜빡할 수 있다 실수로 값을 안보낼 수 있다
         // 2. client bug로 인해 값이 누락될 수 있다
@@ -65,7 +66,8 @@ public class PostController {
         //bad case: 서버에서 반드시 이렇게 할겁니다 fix
         //          -> 서버에서는 유연하게 대응하는 것이 좋음
         //          -> 한번에 일괄적으로 잘 처리되는 케이스가 없다 -> 잘 관리하는 형태가 중요
-        postService.write(reqeust);
+        request.validate();
+        postService.write(request);
     }
 
     /**
