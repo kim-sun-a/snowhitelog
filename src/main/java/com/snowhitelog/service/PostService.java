@@ -2,6 +2,7 @@ package com.snowhitelog.service;
 
 import com.snowhitelog.domain.Post;
 import com.snowhitelog.domain.PostEditor;
+import com.snowhitelog.exception.PostNotPound;
 import com.snowhitelog.repository.PostRepository;
 import com.snowhitelog.request.PostCreate;
 import com.snowhitelog.request.PostEdit;
@@ -32,7 +33,7 @@ public class PostService {
     }
 
     public PostResponse get(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다"));
+        Post post = postRepository.findById(id).orElseThrow(PostNotPound::new);
         /**
          * Controller -> WebPostService -> Repository
          *            -> PostService
@@ -53,7 +54,7 @@ public class PostService {
 
     @Transactional
     public void edit(Long id, PostEdit postEdit) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+        Post post = postRepository.findById(id).orElseThrow(PostNotPound::new);
 
         PostEditor.PostEditorBuilder builder = post.toEditor();
 
@@ -63,7 +64,7 @@ public class PostService {
     }
 
     public void delete(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글압나다."));
+        Post post = postRepository.findById(id).orElseThrow(PostNotPound::new);
 
         //존재하는 경우
         postRepository.delete(post);

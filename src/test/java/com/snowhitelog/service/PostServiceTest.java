@@ -1,12 +1,12 @@
 package com.snowhitelog.service;
 
 import com.snowhitelog.domain.Post;
+import com.snowhitelog.exception.PostNotPound;
 import com.snowhitelog.repository.PostRepository;
 import com.snowhitelog.request.PostCreate;
 import com.snowhitelog.request.PostEdit;
 import com.snowhitelog.request.PostSearch;
 import com.snowhitelog.response.PostResponse;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class PostServiceTest {
@@ -63,7 +62,7 @@ class PostServiceTest {
         //then
         assertNotNull(post);
         assertEquals(1L, postRepository.count());
-        assertEquals("1234567890123456", post.getTitle());
+        assertEquals("1234567890", post.getTitle());
         assertEquals("bar", post.getContent());
 
     }
@@ -153,5 +152,55 @@ class PostServiceTest {
 
         //then
         assertEquals(0, postRepository.count());
+    }
+
+    @Test
+    @DisplayName("글 1개 조회 - 존재하지 않는 글")
+    void test7() {
+        // given
+        Post post = Post.builder().title("백설서나").content("반포자이").build();
+        postRepository.save(post);
+
+        //expected
+        assertThrows(PostNotPound.class, () -> {
+            postService.get(post.getId() + 1);
+        });
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 - 존재하지 않는 글")
+    void test8() {
+        // given
+        Post post = Post.builder()
+                .title("서나쓰")
+                .content("반포자이")
+                .build();
+        postRepository.save(post);
+
+        //expected
+        assertThrows(PostNotPound.class, () -> {
+            postService.delete(post.getId()+1);
+        });
+    }
+
+    @Test
+    @DisplayName("게시글 내용 수정 - 존재하지 않는 글")
+    void test9() {
+        // given
+        Post post = Post.builder()
+                .title("서나쓰")
+                .content("반포자이")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("서나쓰")
+                .content("초가집")
+                .build();
+
+        //expected
+        assertThrows(PostNotPound.class, () -> {
+            postService.edit(post.getId()+1, postEdit);
+        });
     }
 }
