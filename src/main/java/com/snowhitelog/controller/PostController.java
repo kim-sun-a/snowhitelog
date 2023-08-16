@@ -35,9 +35,9 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/foo")
-    public String foo(UserSection userSection) {
-        log.info(">>>{}", userSection.name);
-        return userSection.name;
+    public Long foo(UserSection userSection) {
+        log.info(">>>{}", userSection.id);
+        return userSection.id;
     }
 
     @GetMapping("/bar")
