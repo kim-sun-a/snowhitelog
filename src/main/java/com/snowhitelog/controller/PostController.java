@@ -1,5 +1,6 @@
 package com.snowhitelog.controller;
 
+import com.snowhitelog.config.data.UserSection;
 import com.snowhitelog.domain.Post;
 import com.snowhitelog.exception.InvalidRequest;
 import com.snowhitelog.request.PostCreate;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -32,14 +34,15 @@ public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("/test")
-    public String test() {
-        return "test";
+    @GetMapping("/foo")
+    public String foo(UserSection userSection) {
+        log.info(">>>{}", userSection.name);
+        return userSection.name;
     }
 
-    @GetMapping("/foo")
-    public String foo() {
-        return "foo";
+    @GetMapping("/bar")
+    public String bar(UserSection userSection) {
+        return "인증이 필요없는 페이지";
     }
 
     @PostMapping("/posts")
