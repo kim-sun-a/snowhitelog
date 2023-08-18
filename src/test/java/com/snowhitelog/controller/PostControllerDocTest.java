@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "api.suna.com", uriPort = 443)
 @ExtendWith(RestDocumentationExtension.class)
-public class PostControllerDocTest {
+public class  PostControllerDocTest {
 
     @Autowired
     private ObjectMapper objectMapper;

@@ -1,0 +1,1 @@
+insert into `user` (name, email, password, create_at) values ('서나', 'suna@gmail.com', '1234', '2023-8-18 11:00:00');
