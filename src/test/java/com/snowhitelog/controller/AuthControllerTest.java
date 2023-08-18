@@ -1,6 +1,7 @@
 package com.snowhitelog.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.snowhitelog.domain.Session;
 import com.snowhitelog.domain.User;
 import com.snowhitelog.repository.SessionRepository;
 import com.snowhitelog.repository.UserRepository;
@@ -21,6 +22,7 @@ import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -66,7 +68,6 @@ class AuthControllerTest {
                 .andDo(print());
     }
 
-
     @Test
     @Transactional
     @DisplayName("로그인 성공 후 세션 1개 생성")
@@ -89,7 +90,6 @@ class AuthControllerTest {
 
     }
 
-
     @Test
     @DisplayName("로그인 성공 후 세션 응답")
     void test3() throws Exception {
@@ -107,7 +107,38 @@ class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken", Matchers.notNullValue()))
                 .andDo(print());
+    }
 
 
+    @Test
+    @DisplayName("로그인 후 권한이 필요한 페이지에 접속한다")
+    void test4() throws Exception {
+        //given
+        User user = User.builder().name("서나").email("suna@gmail.com").password("1234").build();
+        Session session = user.addSession();
+        userRepository.save(user);
+
+        // expected
+        mockMvc.perform(get("/foo")
+                        .header("Authorization", session.getAccessToken())
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("로그인 후 검증되지 않은 세션값으로 권한이 필요한 페이지에 접속할 수 없다")
+    void test5() throws Exception {
+        //given
+        User user = User.builder().name("서나").email("suna@gmail.com").password("1234").build();
+        Session session = user.addSession();
+        userRepository.save(user);
+
+        // expected
+        mockMvc.perform(get("/foo")
+                        .header("Authorization", session.getAccessToken() + "-other")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
     }
 }
