@@ -8,3 +8,9 @@ Content-Type: application/json
   "email": "suna@gmail.com",
   "password": "1234"
 }
+
+
+### 인증페이지 요청
+GET http://localhost:8080/foo
+Content-Type: application/json
+Cookie: SESSION=cf19d88c-9e59-4189-af64-5a3d09c074ce
