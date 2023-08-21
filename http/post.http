@@ -2,4 +2,4 @@
 
 GET http://localhost:8080/foo
 Content-Type: application/json
-Authorization: suna
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.F0cPSy0XawtfsPvRpigM08CXGfKwsg58NWhPYRoxGO4
