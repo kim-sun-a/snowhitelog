@@ -1,25 +1,20 @@
 package com.snowhitelog.controller;
 
+import com.snowhitelog.config.data.AppConfig;
 import com.snowhitelog.request.Login;
 import com.snowhitelog.response.SessionResponse;
 import com.snowhitelog.service.AuthService;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Duration;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.util.Base64;
+import java.util.Date;
 
 @Slf4j
 @RestController
@@ -27,7 +22,7 @@ import java.util.Base64;
 public class AuthController {
 
     private final AuthService authService;
-    private static final String KEY = "OSWfVh9o/LuU6b2u2/9A0KvBf8JKipvhakdYHt1xA9A=";
+    private final AppConfig appConfig;
 
     @PostMapping("/auth/login")
     public SessionResponse login(@RequestBody Login login) {
@@ -35,8 +30,8 @@ public class AuthController {
         log.info(">>>login={}", login);
         // db 조회
         Long userId = authService.signin(login);
-        SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(KEY));
-        String jws = Jwts.builder().setSubject(String.valueOf(userId)).signWith(key).compact();
+        SecretKey key = Keys.hmacShaKeyFor(appConfig.getJwtKey());
+        String jws = Jwts.builder().setSubject(String.valueOf(userId)).signWith(key).setIssuedAt(new Date()).compact();
 
         return new SessionResponse(jws);
     }

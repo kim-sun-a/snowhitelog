@@ -22,3 +22,6 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
+suna:
+  jwt-key: "OSWfVh9o/LuU6b2u2/9A0KvBf8JKipvhakdYHt1xA9A="

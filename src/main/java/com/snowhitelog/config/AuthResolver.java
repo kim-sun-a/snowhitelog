@@ -1,5 +1,6 @@
 package com.snowhitelog.config;
 
+import com.snowhitelog.config.data.AppConfig;
 import com.snowhitelog.config.data.UserSection;
 import com.snowhitelog.domain.Session;
 import com.snowhitelog.exception.Unauthorized;
@@ -26,7 +27,7 @@ import java.util.Optional;
 public class AuthResolver implements HandlerMethodArgumentResolver {
 
     private final SessionRepository sessionRepository;
-    private static final String KEY = "OSWfVh9o/LuU6b2u2/9A0KvBf8JKipvhakdYHt1xA9A=";
+    private final AppConfig appConfig;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -35,16 +36,15 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        log.info(">>> {}", appConfig.toString());
         String jws = webRequest.getHeader("Authorization");
         if (jws == null || jws.equals("")) {
             throw new Unauthorized();
         }
 
-        byte[] decodedKey = Base64.getDecoder().decode(KEY);
-
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(decodedKey)
+                    .setSigningKey(appConfig.getJwtKey())
                     .build()
                     .parseClaimsJws(jws);
 
