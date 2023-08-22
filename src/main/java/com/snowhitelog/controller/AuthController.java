@@ -2,6 +2,7 @@ package com.snowhitelog.controller;
 
 import com.snowhitelog.config.data.AppConfig;
 import com.snowhitelog.request.Login;
+import com.snowhitelog.request.Signup;
 import com.snowhitelog.response.SessionResponse;
 import com.snowhitelog.service.AuthService;
 import io.jsonwebtoken.Jwts;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.crypto.SecretKey;
-import java.util.Base64;
 import java.util.Date;
 
 @Slf4j
@@ -34,5 +34,12 @@ public class AuthController {
         String jws = Jwts.builder().setSubject(String.valueOf(userId)).signWith(key).setIssuedAt(new Date()).compact();
 
         return new SessionResponse(jws);
+    }
+
+
+    @PostMapping("/auth/signup")
+    public void signup(@RequestBody Signup signup) {
+        authService.signup(signup);
+
     }
 }
