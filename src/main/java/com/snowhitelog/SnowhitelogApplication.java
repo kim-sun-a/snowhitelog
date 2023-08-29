@@ -1,6 +1,6 @@
 package com.snowhitelog;
 
-import com.snowhitelog.config.data.AppConfig;
+import com.snowhitelog.config.AppConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

@@ -1,8 +1,5 @@
 package com.snowhitelog.controller;
 
-import com.snowhitelog.config.data.UserSection;
-import com.snowhitelog.domain.Post;
-import com.snowhitelog.exception.InvalidRequest;
 import com.snowhitelog.request.PostCreate;
 import com.snowhitelog.request.PostEdit;
 import com.snowhitelog.request.PostSearch;
@@ -10,17 +7,10 @@ import com.snowhitelog.response.PostResponse;
 import com.snowhitelog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -33,17 +23,6 @@ public class PostController {
     // react -> react+SSR = next
 
     private final PostService postService;
-
-    @GetMapping("/foo")
-    public Long foo(UserSection userSection) {
-        log.info(">>>{}", userSection.id);
-        return userSection.id;
-    }
-
-    @GetMapping("/bar")
-    public String bar(UserSection userSection) {
-        return "인증이 필요없는 페이지";
-    }
 
     @PostMapping("/posts")
     public void post(@RequestBody @Valid PostCreate request) {

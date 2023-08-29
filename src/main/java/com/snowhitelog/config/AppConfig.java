@@ -1,4 +1,4 @@
-package com.snowhitelog.config.data;
+package com.snowhitelog.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
