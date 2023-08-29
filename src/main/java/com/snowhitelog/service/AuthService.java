@@ -1,6 +1,6 @@
 package com.snowhitelog.service;
 
-import com.snowhitelog.domain.Session;
+import com.snowhitelog.crypto.PasswordEncoder;
 import com.snowhitelog.domain.User;
 import com.snowhitelog.exception.AlreadyExistsEmailException;
 import com.snowhitelog.exception.InvalidSigninInformation;
@@ -18,12 +18,17 @@ import java.util.Optional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Long signin(Login login) {
-        User user = userRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
-                .orElseThrow(InvalidSigninInformation::new);
-        Session session = user.addSession();
+        User user = userRepository.findByEmail(login.getEmail()).orElseThrow(InvalidSigninInformation::new);
+
+        var matches = passwordEncoder.matches(login.getPassword(), user.getPassword());
+        if (!matches) {
+            throw new InvalidSigninInformation();
+        }
+
         return user.getId();
     }
 
@@ -33,7 +38,9 @@ public class AuthService {
             throw new AlreadyExistsEmailException();
         }
 
-        User user = User.builder().name(signup.getName()).password(signup.getPassword()).email(signup.getEmail()).build();
+        String encryptedPassword = passwordEncoder.encrypt(signup.getPassword());
+
+        User user = User.builder().name(signup.getName()).password(encryptedPassword).email(signup.getEmail()).build();
         userRepository.save(user);
     }
 }
